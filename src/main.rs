@@ -31,19 +31,22 @@ async fn main() -> io::Result<()> {
         .build(manager)
         .expect("Failed to create pool");
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
-            // Enable logger
+            // Set up DB pool to be used with web::Data<Pool> extractor
+            .data(pool.clone())
+            // enable logger - always register actix-web Logger middleware last
             .wrap(middleware::Logger::default())
             // register HTTP requests handlers
             .service(tweet::list)
             .service(tweet::get)
             .service(tweet::create)
+            .service(tweet::delete)
             .service(like::list)
             .service(like::plus_one)
             .service(like::minus_one)
     })
-    .bind("0.0.0.0:9090")?
-    .run()
-    .await
+        .bind("0.0.0.0:9090")?
+        .run()
+        .await
 }
