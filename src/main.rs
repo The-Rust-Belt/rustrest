@@ -3,6 +3,9 @@ extern crate actix_web;
 #[macro_use]
 extern crate diesel;
 
+extern crate dotenv;
+
+use dotenv::dotenv;
 use std::{env, io};
 
 use actix_web::{middleware, App, HttpServer};
